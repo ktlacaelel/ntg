@@ -1,5 +1,27 @@
 #!/usr/bin/env ruby
 
+# n
+p = proc { |x, w, b| x * w + b }
+e = proc { |x, w| x * w }
+relu = proc { |x| x > 0 ? x : 0 }
+rb = proc { rand(-5.0..5.0) }
+rw = proc { rand(-50..50) }
+
+# neuron -> activation (relu) -> edge
+net = proc do |px, pw, pb, ex, ew, eb, ew1, ew2, ow1, ow2, ob1, ob2|
+  ev = p.call(ex, ew, eb)
+  pv = p.call(px, pw, pb)
+
+  e1 = e.call(relu.call(ev), ew1)
+  e2 = e.call(relu.call(pv), ew2)
+
+  o1 = p.call(e1, ow1, ob1)
+  o2 = p.call(e2, ow2, ob2)
+
+  d = relu.call(o1 + o2)
+  d > 0 ? :left : :right
+end
+
 # tg
 require 'isna'
 
